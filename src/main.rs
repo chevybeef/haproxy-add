@@ -138,7 +138,9 @@ fn main() {
     new_contents.push('\n');
     new_contents.push_str(&backend_block);
 
-    let out_path = env::current_dir().expect("Failed to get current path");
+    let out_path = env::current_dir()
+        .expect("Failed to get current path")
+        .join(cfg_path.file_name().expect("couldn't get file name"));
 
     if let Err(e) = fs::write(&out_path, &new_contents) {
         eprintln!("Failed to write {}: {e}", out_path.display());
