@@ -29,7 +29,9 @@ fn prompt(label: &str) -> String {
     print!("{label}: ");
     io::stdout().flush().ok();
     let mut buf = String::new();
-    io::stdin().read_line(&mut buf).expect("failed to read stdin");
+    io::stdin()
+        .read_line(&mut buf)
+        .expect("failed to read stdin");
     buf.trim().to_string()
 }
 
@@ -45,10 +47,10 @@ fn prompt_yn(label: &str, default_no: bool) -> bool {
 /// Turn "My Cool App" into "my_cool_app"
 fn slugify(s: &str) -> String {
     s.trim()
-       .to_lowercase()
-       .chars()
-       .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
-       .collect()
+        .to_lowercase()
+        .chars()
+        .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
+        .collect()
 }
 
 fn main() {
@@ -100,17 +102,17 @@ fn main() {
         format!("    server {service} {addr}")
     };
 
-    let backend_block = format!(
-        "\nbackend {backend_name}\n    mode http\n{server_line}\n"
-    );
+    let backend_block = format!("\nbackend {backend_name}\n    mode http\n{server_line}\n");
 
     let lines: Vec<&str> = original.lines().collect();
 
     // Find last "    acl is_" line and last "    use_backend " line.
-    let last_acl_idx = lines.iter().rposition(|l| l.trim_start().starts_with("acl is_"));
+    let last_acl_idx = lines
+        .iter()
+        .rposition(|l| l.trim_start().starts_with("acl is_"));
     let last_use_backend_idx = lines
-       .iter()
-       .rposition(|l| l.trim_start().starts_with("use_backend "));
+        .iter()
+        .rposition(|l| l.trim_start().starts_with("use_backend "));
 
     let (Some(acl_idx), Some(ub_idx)) = (last_acl_idx, last_use_backend_idx) else {
         eprintln!(
@@ -136,8 +138,7 @@ fn main() {
     new_contents.push('\n');
     new_contents.push_str(&backend_block);
 
-    let out_path = format!("{}.new", cfg_path.display());
-    let out_path = Path::new(&out_path);
+    let out_path = env::current_dir().expect("Failed to get current path");
 
     if let Err(e) = fs::write(&out_path, &new_contents) {
         eprintln!("Failed to write {}: {e}", out_path.display());
@@ -145,6 +146,10 @@ fn main() {
     }
 
     println!("\nWrote {}", out_path.display());
-    println!("Review with: diff {} {}", cfg_path.display(), out_path.display());
+    println!(
+        "Review with: diff {} {}",
+        cfg_path.display(),
+        out_path.display()
+    );
     println!("Then apply manually and reload haproxy yourself.");
 }
