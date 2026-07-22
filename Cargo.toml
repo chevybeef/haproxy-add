@@ -1,0 +1,8 @@
+[package]
+name = "haproxy-add"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "haproxy-add"
+path = "src/main.rs"
