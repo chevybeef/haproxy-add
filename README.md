@@ -2,7 +2,7 @@
 
 - cargo run -- /etc/haproxy/haproxy.cfg
 - It does NOT parse haproxy.cfg properly - it just finds the last "acl is_" line and the last "use_backend" line inside the frontend block, and inserts new lines right after them. Then it appends a new backend block at the end of the file.
-- It never touches the original file: it writes the filename to the current directory for review before manually applying.
+- It never touches the original file: it writes the filename to the current directory for review before manually applying with apply_changes.sh if correct.
 
 ```
   frontend Internal
