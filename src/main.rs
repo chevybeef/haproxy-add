@@ -24,7 +24,6 @@ use std::process::exit;
 ///
 /// It never touches the original file: it writes "<path>.new" next to
 /// it so you can diff before applying.
-
 fn prompt(label: &str) -> String {
     print!("{label}: ");
     io::stdout().flush().ok();
@@ -53,7 +52,19 @@ fn slugify(s: &str) -> String {
         .collect()
 }
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+const PACKAGE: &str = env!("CARGO_PKG_NAME");
+const GIT_SHA: &str = env!("VERGEN_GIT_SHA");
+const GIT_DIRTY: &str = env!("VERGEN_GIT_DIRTY");
+
 fn main() {
+    let now = chrono::Local::now();
+    let dirty = if GIT_DIRTY == "true" { "-dirty" } else { "" };
+    println!(
+        "{PACKAGE} v{VERSION} ({GIT_SHA}{dirty}) at {} on {}",
+        now.format("%Y-%m-%d %H:%M:%S"),
+        std::env::consts::OS,
+    );
     let args: Vec<String> = env::args().collect();
     let cfg_path = if args.len() > 1 {
         args[1].clone()

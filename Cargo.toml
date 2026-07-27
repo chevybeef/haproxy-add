@@ -6,3 +6,9 @@ edition = "2021"
 [[bin]]
 name = "haproxy-add"
 path = "src/main.rs"
+
+[build-dependencies]
+vergen-gitcl = "9"
+
+[dependencies]
+chrono = "0.4.45"
